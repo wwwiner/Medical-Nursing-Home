@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+window.onload = function(){
+	var updateBtn = document.getElementById("updateBtn");
+	updateBtn.onclick = function(){
+		var req;
+		if(window.XMLHttpRequest){
+			req = new XMLHttpRequest();
+		}else if(window.ActiveXObject){
+			req = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		
+		var deptno = document.getElementById("deptno").value;
+		var dname = document.getElementById("dname").value;
+		
+		req.open("post","updateDept/"+deptno+"/"+dname,false);
+		req.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	/* 	req.setRequestHeader("contentType",false);
+		req.setRequestHeader("processData",false); */
+		req.onreadystatechange = changePage;
+		/* var f1 = document.getElementById("f1");
+		var formData = new FormData(f1); */
+		req.send();
+		
+		function  changePage(){
+			if(req.readyState==4){
+				if(req.status==200){
+					var result = req.responseText;
+					console.log(result);
+				}
+			}
+		}	 
+	}
+}
+</script>
+</head>
+<body>
+	<div>
+		<input type="hidden" name="deptno" id="deptno"  value="41" >
+	</div>
+	<div>
+		<input type="text" name="dname" id="dname"  >
+	</div>
+	<div>
+		<button type="button" id="updateBtn" >修改</button>
+	</div>
+</body>
+</html>

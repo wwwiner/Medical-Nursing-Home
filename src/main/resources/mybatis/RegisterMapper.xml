@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.springboot.model.mapper.RegisterMapper">
+
+    <resultMap type="Register" id="RegisterList">
+        <result column="id" property="id"/>
+        <result column="userName" property="userName"/>
+        <result column="userAccount" property="userAccount"/>
+        <result column="docAccount" property="docAccount"/>
+        <result column="docName" property="docName"/>
+        <result column="registerDepartment" property="registerDepartment"/>
+        <result column="docType" property="docType"/>
+        <result column="userDescription" property="userDescription"/>
+        <result column="docDiagnostic" property="docDiagnostic"/>
+        <result column="drug" property="drug"/>
+        <result column="status" property="status"/>
+        <result column="deptName" property="deptName"/>
+        <result column="deptCategoryName" property="deptCategoryName"/>
+        <result column="disease" property="disease"/>
+        <result column="isHosAdvice" property="isHosAdvice"/>
+    </resultMap>
+
+    <insert id="register" parameterType="Register">
+        insert into register (DocName, RegisterDepartment, UserAccount, UserName, DeptName, DeptCategoryName, Status)
+        values (#{docName}, #{registerDepartment}, #{userAccount}, #{userName}, #{deptName}, #{deptCategoryName},
+                '正在处理')
+    </insert>
+
+    <select id="selectPatientRegisterByUserName" parameterType="DepartmentPageDto" resultMap="RegisterList">
+        select *
+        from register
+        <where>
+            <if test="docName!=null and docName!=''">
+                and DocName like concat( '%' ,#{docName} , '%')
+            </if>
+            <if test="deptCategoryName!=null and deptCategoryName!=''">
+                and DeptCategoryName = #{deptCategoryName}
+            </if>
+            <if test="status!=null and status!=''">
+                and Status like concat( '%' ,#{status} , '%')
+            </if>
+            and UserAccount = #{userAccount}
+        </where>
+        ORDER BY ID
+        LIMIT #{beginNum},#{maxPageNum}
+    </select>
+
+    <delete id="deletePatientRegisterById" parameterType="Register">
+        delete
+        from register
+        WHERE ID = #{id};
+    </delete>
+
+    <select id="selectDoctorDiagnosisByDocAccount" parameterType="Register" resultMap="RegisterList">
+        select *
+        from register
+        where DocName = #{docName}
+          and Status = '正在处理'
+    </select>
+
+    <update id="addDoctorInformationById" parameterType="Register">
+        update register
+        set DocAccount=#{docAccount},
+            DocType=#{docType}
+        where ID = #{id}
+    </update>
+
+    <select id="selectPatientRegisterById" parameterType="Register" resultMap="RegisterList">
+        select *
+        from register
+        where ID = #{id}
+    </select>
+
+    <update id="diagnosisIsOk" parameterType="Register">
+        update register
+        set DocDiagnostic=#{docDiagnostic},
+            Disease=#{disease},
+            IsHosAdvice=#{isHosAdvice},
+            Drug=#{drug},
+            Status       = '诊断完成，待缴费'
+        where ID = #{id}
+    </update>
+
+    <update id="setStatusPayOk" parameterType="Register">
+        update register
+        set Status = #{status}
+        where ID = #{id}
+    </update>
+
+    <select id="selectDoctorDiagnosisAll" resultMap="RegisterList" parameterType="DepartmentPageDto">
+        select * from register
+        <where>
+            <if test="docName!=null and docName!=''">
+                and DocName like concat( '%' ,#{docName} , '%')
+            </if>
+            <if test="deptCategoryName!=null and deptCategoryName!=''">
+                and DeptCategoryName = #{deptCategoryName}
+            </if>
+            <if test="status!=null and status!=''">
+                and Status like concat( '%' ,#{status} , '%')
+            </if>
+        </where>
+        ORDER BY ID
+        LIMIT #{beginNum},#{maxPageNum}
+    </select>
+
+    <select id="selectAllCount" resultType="int">
+        select count(*)
+        from register
+    </select>
+
+    <select id="selectAllCountByUserName" resultType="int" parameterType="DepartmentPageDto">
+        select count(*)
+        from register
+        where UserAccount = #{userAccount}
+    </select>
+</mapper>

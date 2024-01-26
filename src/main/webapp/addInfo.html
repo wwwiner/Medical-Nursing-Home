@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+window.onload = function(){
+	var addInfo = document.getElementById("addInfo");
+	addInfo.onclick = function(){
+		var req;
+		if(window.XMLHttpRequest){
+			req = new XMLHttpRequest();
+		}else if(window.ActiveXObject){
+			req = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		req.open("post","addDept",false);
+		//req.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		req.setRequestHeader("contentType",false);
+		req.setRequestHeader("processData",false);
+		req.onreadystatechange = changePage;
+		var f1 = document.getElementById("f1");
+		var formData = new FormData(f1);
+		req.send(formData);
+		
+		function  changePage(){
+			if(req.readyState==4){
+				if(req.status==200){
+					var result = req.responseText;
+					console.log(result);
+				}
+			}
+		}	 
+	}
+}
+</script>
+</head>
+<body>
+	
+	<form  id="f1" enctype="multipart/form-data"    >
+		<div>部门名称:<input type="text" name="dname"   ></div>
+		<div>部门地址:<input type="text" name="loc" ></div>
+		<div>上传文件:<input type="file" name="picture" ></div>
+		<div><button type="button"  id="addInfo" >提交</button></div>
+	</form>
+
+</body>
+</html>

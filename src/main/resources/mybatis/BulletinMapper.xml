@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.springboot.model.mapper.BulletinMapper">
+
+    <resultMap type="Bulletin" id="BulletinList">
+        <result column="id" property="id"/>
+        <result column="bulletinTitle" property="bulletinTitle"/>
+        <result column="userName" property="userName"/>
+        <result column="bullType" property="bullType"/>
+        <result column="content" property="content"/>
+        <result column="createDate" property="createDate"/>
+    </resultMap>
+
+    <select id="selectCountFromBulletinList" resultType="int">
+        select count(*)
+        from bulletin
+    </select>
+
+    <select id="selectBulletinList" resultMap="BulletinList" parameterType="DepartmentPageDto">
+        SELECT * FROM bulletin
+        <where>
+            <if test="bullTitle!=null and bullTitle!=''">
+                and bullTitle like concat( '%' ,#{bullTitle} , '%')
+            </if>
+            <if test="bullType!=null and bullType!=''">
+                and BullType like concat( '%' ,#{bullType} , '%')
+            </if>
+        </where>
+        ORDER BY ID
+        LIMIT #{beginNum},#{maxPageNum}
+    </select>
+
+    <select id="selectBullType" resultMap="BulletinList">
+        select ID, BullType
+        from bulletin
+    </select>
+
+    <update id="updateBulletinById" parameterType="Bulletin">
+        update bulletin
+        set BullTitle=#{bullTitle},
+        BullType=#{bullType},
+        Content=#{content},
+        UserName=#{userName}
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteBulletinById" parameterType="Bulletin">
+        delete
+        from bulletin
+        WHERE ID = #{id};
+    </delete>
+
+    <insert id="insertBulletin" parameterType="Bulletin">
+        insert into bulletin(BullTitle,BullType,Content,UserName)
+        values (#{bullTitle},#{bullType},#{content},#{userName})
+    </insert>
+
+    <delete id="removeBulletinBatch" parameterType="Bulletin">
+        delete from bulletin where id in
+        <foreach collection="list" item="bulletin" open="(" close=")" separator=",">
+            #{bulletin.id}
+        </foreach>
+    </delete>
+
+    <select id="selectBullTitleByBullType" resultMap="BulletinList" parameterType="Bulletin">
+        select ID, BullTitle
+        from bulletin
+        where BullType = #{bullType}
+    </select>
+
+</mapper>

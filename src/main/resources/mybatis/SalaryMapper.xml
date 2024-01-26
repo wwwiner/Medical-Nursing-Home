@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.springboot.model.mapper.SalaryMapper">
+
+    <resultMap type="Salary" id="SalaryList">
+        <result column="id" property="id"/>
+        <result column="userName" property="userName"/>
+        <result column="userAccount" property="userAccount"/>
+        <result column="transferTime" property="transferTime"/>
+        <result column="transferMoney" property="transferMoney"/>
+        <result column="allTransferMoney" property="allTransferMoney"/>
+        <result column="transferType" property="transferType"/>
+    </resultMap>
+
+    <select id="selectAllTransferMoney" parameterType="Salary" resultMap="SalaryList">
+        select *
+        from salary
+        where UserAccount = #{userAccount}
+    </select>
+
+    <select id="selectAllTransferMoney_Transfer" parameterType="Salary" resultMap="SalaryList">
+        select *
+        from salary
+        where TransferAccount = #{transferAccount}
+    </select>
+
+    <insert id="newSalary" parameterType="Salary">
+        insert into salary (UserAccount, UserName, TransferAccount, TransferName, TransferTime, TransferMoney,
+                            AllTransferMoney, TransferType)
+        values (#{userAccount}, #{userName}, #{transferAccount}, #{transferName}, #{transferTime}, #{transferMoney},
+                #{allTransferMoney}, #{transferType})
+    </insert>
+
+    <select id="selectCountFromSalary" resultType="int" parameterType="Salary">
+        select count(*)
+        from salary
+        where UserAccount = #{userAccount};
+    </select>
+
+    <select id="selectAll" parameterType="DepartmentPageDto" resultMap="SalaryList">
+        select *
+        from salary
+        where UserAccount = #{userAccount}
+        ORDER BY ID
+        LIMIT #{beginNum}, #{maxPageNum}
+    </select>
+</mapper>

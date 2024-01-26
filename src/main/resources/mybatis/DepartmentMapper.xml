@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.springboot.model.mapper.DepartmentMapper">
+
+    <resultMap type="Department" id="DepartmentList">
+        <result column="id" property="id"/>
+        <result column="deptCode" property="deptCode"/>
+        <result column="deptName" property="deptName"/>
+        <result column="deptCategoryName" property="deptCategoryName"/>
+        <result column="deptType" property="deptType"/>
+        <result column="ceateName" property="ceateName"/>
+        <result column="ceateDate" property="ceateDate" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectDepartmentList_create" resultMap="DepartmentList">
+        SELECT *
+        FROM department
+        WHERE 1 = 1
+        ORDER BY ID;
+    </select>
+
+    <select id="selectDepartmentList" resultMap="DepartmentList" parameterType="DepartmentPageDto">
+        SELECT * FROM department
+        <where>
+            <if test="deptName!=null and deptName!=''">
+                and DeptName like concat( '%' ,#{deptName} , '%')
+            </if>
+            <if test="deptCategoryName!=null and deptCategoryName!=''">
+                and DeptCategoryName=#{deptCategoryName}
+            </if>
+            <if test="deptType!=null and deptType !=''">
+                and DeptType=#{deptType}
+            </if>
+        </where>
+        ORDER BY ID
+        LIMIT #{beginNum},#{maxPageNum}
+    </select>
+
+    <select id="selectCountFromDepartmentList" resultType="int">
+        SELECT count(*)
+        FROM department
+        WHERE 1 = 1
+    </select>
+
+    <select id="selectDepartmentClassification" resultMap="DepartmentList">
+        SELECT distinct DeptCategoryName, ID
+        FROM department
+    </select>
+
+    <select id="selectDepartmentType" resultMap="DepartmentList">
+        SELECT distinct DeptType, ID
+        FROM department
+    </select>
+
+    <update id="updateDeptartment" parameterType="Department">
+        update department
+        set DeptCode         = #{deptCode},
+            DeptName         = #{deptName},
+            DeptCategoryName = #{deptCategoryName},
+            DeptType         = #{deptType},
+            CreateName       = #{createName},
+            CreateDate       = #{createDate}
+        where ID = #{id};
+    </update>
+
+    <insert id="insertDeptartment" parameterType="Department">
+        insert into department(DeptCode, DeptName, DeptCategoryName, DeptType, CreateName, CreateDate)
+        values (#{deptCode}, #{deptName}, #{deptCategoryName}, #{deptType}, #{createName}, #{createDate});
+    </insert>
+
+    <select id="selectDepartmentbyId" resultType="Department" parameterType="Department">
+        SELECT *
+        FROM department
+        where ID = #{id};
+    </select>
+
+    <delete id="deleteDepartmentbyId" parameterType="Department">
+        delete
+        from department
+        WHERE ID = #{id};
+    </delete>
+
+    <delete id="removeDepartmentBatch" parameterType="Department">
+        delete from department where id in
+        <foreach collection="list" item="department" open="(" close=")" separator=",">
+            #{department.id}
+        </foreach>
+    </delete>
+
+    <select id="selectCountFromDepartmentListAsPatient" resultType="int">
+        SELECT count(*)
+        FROM department
+        WHERE 1 = 1 and DeptType = '医疗科室'
+    </select>
+
+    <select id="selectDepartmentListAsPatient" resultMap="DepartmentList" parameterType="DepartmentPageDto">
+        SELECT * FROM department
+        <where>
+            <if test="deptName!=null and deptName!=''">
+                and DeptName like concat( '%' ,#{deptName} , '%')
+            </if>
+            <if test="deptCategoryName!=null and deptCategoryName!=''">
+                and DeptCategoryName=#{deptCategoryName}
+            </if>
+            and DeptType = '医疗科室'
+        </where>
+
+        ORDER BY ID
+        LIMIT #{beginNum},#{maxPageNum}
+    </select>
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.springboot.model.mapper.WardMapper">
+
+    <resultMap type="Ward" id="WardList">
+        <result column="id" property="id"/>
+        <result column="wardCode" property="wardCode"/>
+        <result column="wardName" property="wardName"/>
+        <result column="wardType" property="wardType"/>
+        <result column="wardAddress" property="wardAddress"/>
+        <result column="userAccount" property="userAccount"/>
+        <result column="userName" property="userName"/>
+        <result column="isNull" property="isNull"/>
+        <result column="disease" property="disease"/>
+        <result column="inTime" property="inTime"/>
+        <result column="continuedTime" property="continuedTime"/>
+        <result column="docName" property="docName"/>
+        <result column="wardPrice" property="wardPrice"/>
+    </resultMap>
+
+    <select id="selectWardType" resultMap="WardList">
+        SELECT WardType, ID
+        FROM ward;
+    </select>
+
+    <select id="selectWardNameByWardType" resultMap="WardList" parameterType="Ward">
+        SELECT WardName, ID
+        FROM ward
+        where WardType = #{wardType}
+          and IsWardNull != '1';
+    </select>
+
+    <select id="nullWardCount" resultType="int">
+        SELECT count(*)
+        FROM ward
+        WHERE WardType = #{wardType}
+          AND IsWardNull != '1';
+    </select>
+
+    <select id="notNullWardCount" resultType="int">
+        SELECT count(*)
+        FROM ward
+        WHERE WardType = #{wardType};
+    </select>
+
+    <update id="inWard" parameterType="Ward">
+        update ward
+        set UserAccount=#{userAccount},
+            UserName=#{userName},
+            IsWardNull=1,
+            Disease=#{disease},
+            InTime=#{inTime},
+            ContinuedTime=#{continuedTime},
+            DocName=#{docName},
+            WardPrice=#{wardPrice}
+        where WardName = #{wardName}
+    </update>
+
+    <update id="outWardById" parameterType="Ward">
+        update hospitalization
+        set Status='已出院'
+        where Id = #{id}
+    </update>
+
+    <update id="outWardClearById" parameterType="Ward">
+        update ward
+        set UserAccount='',
+            UserName='',
+            IsWardNull='0',
+            InTime= null,
+            ContinuedTime='',
+            DocName='',
+            Disease= null,
+            WardPrice = 0
+        where UserAccount = #{userAccount}
+    </update>
+
+    <select id="selectCountFromWardList" resultType="int">
+        SELECT count(*)
+        FROM ward
+    </select>
+
+    <select id="selectWardList" resultMap="WardList"
+            parameterType="DepartmentPageDto">
+        select * from ward
+        <where>
+            <if test="userName!=null and userName!=''">
+                and UserName like concat( '%' ,#{userName} , '%')
+            </if>
+            <if test="wardType!=null and wardType!=''">
+                and WardType like concat( '%' ,#{wardType} , '%')
+            </if>
+        </where>
+        ORDER BY ID
+        LIMIT #{beginNum},#{maxPageNum}
+    </select>
+</mapper>

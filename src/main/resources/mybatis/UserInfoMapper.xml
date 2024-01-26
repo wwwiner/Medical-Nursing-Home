@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.springboot.model.mapper.UserInfoMapper">
+
+    <resultMap type="UserInfo" id="UserInfoList">
+        <result column="id" property="id"/>
+        <result column="userName" property="userName"/>
+        <result column="password" property="password"/>
+        <result column="oldPassword" property="oldPassword"/>
+        <result column="realName" property="realName"/>
+        <result column="userType" property="userType"/>
+        <result column="privilegeLevel" property="privilegeLevel"/>
+        <result column="Avatarlink" property="Avatarlink"/>
+    </resultMap>
+
+	<select id="login" parameterType="UserInfo" resultType="UserInfo" >
+		select *  from user
+		where UserName=#{userName}  and  Password=#{password}
+	</select>
+
+    <update id="updatePassword"  parameterType="UserInfo">
+        update user
+        set Password=#{password}
+        where UserName=#{userName} and Password=#{oldPassword}
+    </update>
+
+    <insert id="register" parameterType="UserInfo"  >
+        insert into user(UserName,Password,RealName,UserType,Money)
+        values (#{userName},#{password},#{realName},'用户',0)
+    </insert>
+
+    <select id="forgetPassword" parameterType="UserInfo" resultType="UserInfo" >
+        select *  from user
+        where UserName=#{userName}  and  RealName=#{realName}
+    </select>
+
+    <select id="selectuserType"  resultMap="UserInfoList" >
+        select ID,UserType from user
+    </select>
+
+    <select id="selectCountFromUserList"  resultType="int" >
+        select count(*) from user
+    </select>
+
+    <select id="selectUserList" resultMap="UserInfoList" parameterType="DepartmentPageDto">
+        SELECT * FROM user
+        <where>
+            <if test="realName!=null and realName!=''">
+                and RealName like concat( '%' ,#{realName} , '%')
+            </if>
+            <if test="userType!=null and userType!=''">
+                and UserType like concat( '%' ,#{userType} , '%')
+            </if>
+        </where>
+        ORDER BY ID
+        LIMIT #{beginNum},#{maxPageNum}
+    </select>
+
+    <update id="updateUser"  parameterType="UserInfo">
+        update user
+        set UserName=#{userName},
+            Password=#{password},
+            RealName=#{realName},
+            UserType=#{userType},
+            Money=#{money}
+        where id=#{id}
+    </update>
+
+
+
+    <delete id="deleteUserById" parameterType="UserInfo">
+        delete
+        from user
+        WHERE ID = #{id};
+    </delete>
+
+    <delete id="removeUserBatch" parameterType="UserInfo">
+        delete from user where id in
+        <foreach collection="list" item="userInfo" open="(" close=")" separator=",">
+            #{userInfo.id}
+        </foreach>
+    </delete>
+
+    <select id="selectDocByDeptType" resultMap="UserInfoList" parameterType="Department">
+        SELECT * FROM user
+        <where>
+            <if test="deptName!=null and deptName!=''">
+                LOCATE(#{deptName},UserType)>0
+            </if>
+        </where>
+        ORDER BY ID
+    </select>
+
+    <update id="kouQian"  parameterType="UserInfo">
+        update user
+        set Money = Money - #{money}
+        where UserName=#{userName}
+    </update>
+
+    <update id="jiaQian"  parameterType="UserInfo">
+        update user
+        set Money = Money + #{money}
+        where UserName=#{userName}
+    </update>
+
+    <select id="selectMoneyByUserName" parameterType="UserInfo" resultType="UserInfo" >
+        select * from user
+        where UserName=#{userName}
+    </select>
+
+    <select id="selectBalanceByUserName" parameterType="UserInfo" resultType="int" >
+        select Money from user
+        where UserName=#{userName}
+    </select>
+
+    <select id="selectAvatarlinkByUserAccount" parameterType="UserInfo" resultType="String" >
+        select AvatarLink from user
+        where UserName=#{userName}
+    </select>
+
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.springboot.model.mapper.DrugMapper">
+
+    <resultMap type="Drug" id="DrugList">
+        <result column="id" property="id"/>
+        <result column="drugName" property="drugName"/>
+        <result column="drugType" property="drugType"/>
+        <result column="drugCount" property="drugCount"/>
+        <result column="drugPrice" property="drugPrice"/>
+    </resultMap>
+
+    <select id="selectCountFromDrugList" resultType="int">
+        select count(*)
+        from drug
+    </select>
+
+    <select id="selectDrugList" resultMap="DrugList" parameterType="DepartmentPageDto">
+        SELECT * FROM drug
+        <where>
+            <if test="drugName!=null and drugName!=''">
+                and DrugName like concat( '%' ,#{drugName} , '%')
+            </if>
+            <if test="drugType!=null and drugType!=''">
+                and DrugType like concat( '%' ,#{drugType} , '%')
+            </if>
+        </where>
+        ORDER BY ID
+        LIMIT #{beginNum},#{maxPageNum}
+    </select>
+
+    <select id="selectDrugType" resultMap="DrugList">
+        select ID, DrugType
+        from drug
+    </select>
+
+    <update id="updateDrugById" parameterType="Drug">
+        update drug
+        set DrugName=#{drugName},
+            DrugCount=#{drugCount},
+            DrugPrice=#{drugPrice},
+            DrugType=#{drugType}
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDrugById" parameterType="Drug">
+        delete
+        from drug
+        WHERE ID = #{id};
+    </delete>
+
+    <insert id="insertDrug" parameterType="Drug">
+        insert into drug(DrugName, DrugType, DrugCount, DrugPrice)
+        values (#{drugName}, #{drugType}, #{drugCount}, #{drugPrice})
+    </insert>
+
+    <delete id="removeDrugBatch" parameterType="Drug">
+        delete from drug where id in
+        <foreach collection="list" item="drug" open="(" close=")" separator=",">
+            #{drug.id}
+        </foreach>
+    </delete>
+
+    <select id="selectDrugNameByDrugType" resultMap="DrugList" parameterType="Drug">
+        select ID, DrugName
+        from drug
+        where DrugType = #{drugType}
+    </select>
+
+    <select id="selectDrugPrice" parameterType="String" resultType="int">
+        select DrugPrice
+        from drug
+        where DrugName = #{drugName}
+    </select>
+
+    <update id="drugCountMinusOne" parameterType="Drug">
+        update drug
+        set DrugCount = DrugCount - 1
+        where DrugName=#{drugName}
+    </update>
+</mapper>

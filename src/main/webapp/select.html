@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+window.onload = function(){
+	var selectDept = document.getElementById("selectBtn");
+	selectDept.onclick = function(){
+		var req;
+		if(window.XMLHttpRequest){
+			req = new XMLHttpRequest();
+		}else if(window.ActiveXObject){
+			req = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		req.open("post","selectDepts",false);
+		req.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		req.onreadystatechange = changePage;
+		req.send();
+		
+		function  changePage(){
+			if(req.readyState==4){
+				if(req.status==200){
+					var result = req.responseText;
+					console.log(result);
+				}
+			}
+		}	 
+	}
+}
+</script>
+</head>
+<body>
+	<button type="button" id="selectBtn"  >查询</button>
+</body>
+</html>

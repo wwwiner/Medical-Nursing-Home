@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuedu.springboot.model.mapper.HospitalizationMapper">
+
+    <resultMap type="Hospitalization" id="HospitalizationList">
+        <result column="id" property="id"/>
+        <result column="userName" property="userName"/>
+        <result column="userAccount" property="userAccount"/>
+        <result column="docAccount" property="docAccount"/>
+        <result column="docName" property="docName"/>
+        <result column="docType" property="docType"/>
+        <result column="disease" property="disease"/>
+        <result column="inTime" property="inTime"/>
+        <result column="continuedTime" property="continuedTime"/>
+        <result column="status" property="status"/>
+        <result column="payMoney" property="payMoney"/>
+        <result column="isIn" property="isIn"/>
+        <result column="registerId" property="registerId"/>
+        <result column="deptType" property="deptType"/>
+        <result column="hosId" property="hosId"/>
+    </resultMap>
+
+    <insert id="hosByDoc" parameterType="Hospitalization">
+        insert into hospitalization (DocAccount, DocName, DocType, UserAccount, UserName, Disease, Status, RegisterId,
+                                     DeptType, DeptCategoryName,InTime)
+        values (#{docAccount}, #{docName}, #{docType}, #{userAccount}, #{userName}, #{disease}, #{status},
+                #{registerId}, #{deptType}, #{deptCategoryName}, #{inTime})
+    </insert>
+
+    <select id="selectAllCount" resultType="int">
+        select count(*)
+        from hospitalization
+    </select>
+
+    <select id="selectHospitalizationListByUserAccount" resultMap="HospitalizationList"
+            parameterType="DepartmentPageDto">
+        select * from hospitalization
+        <where>
+            <if test="docName!=null and docName!=''">
+                and DocName like concat( '%' ,#{docName} , '%')
+            </if>
+            <if test="deptCategoryName!=null and deptCategoryName!=''">
+                and DeptCategoryName = #{deptCategoryName}
+            </if>
+            <if test="status!=null and status!=''">
+                and Status = #{status}
+            </if>
+            and UserAccount = #{userAccount}
+        </where>
+        ORDER BY ID
+        LIMIT #{beginNum},#{maxPageNum}
+    </select>
+
+    <update id="notInWardById" parameterType="Hospitalization">
+        update hospitalization
+        set Status = '拒绝住院'
+        where ID = #{id};
+    </update>
+
+    <select id="selectHospitalizationById" resultType="Hospitalization"
+            parameterType="DepartmentPageDto">
+        select *
+        from hospitalization
+        where ID = #{id}
+        ORDER BY ID
+    </select>
+
+    <update id="inWard" parameterType="Hospitalization">
+        update hospitalization
+        set Status = #{status},
+            PayMoney = #{payMoney},
+            InTime = #{inTime},
+            ContinuedTime = #{continuedTime},
+            IsIn = #{isIn},
+            WardName = #{wardName}
+        where ID = #{id};
+    </update>
+</mapper>
