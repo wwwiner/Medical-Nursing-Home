@@ -1,5 +1,5 @@
 - 👋 Hi, I’m @wwwiner
-This is a fron-end aand back-end separation javaweb project.
+This is a fron-end and back-end separation javaweb project.
 
 <!---
 wwwiner/wwwiner is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
