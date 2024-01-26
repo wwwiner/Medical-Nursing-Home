@@ -1,0 +1,68 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn add @vant/area-data
+
+PATH: 
+  /usr/local/bin:/usr/local/sbin:./usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/Users/apple/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Library/Java/JavaVirtualMachines/jdk13.0.2.jdk/Contents/Home/bin:/usr/local/apache-tomcat-7.0.104/bin:/Users/apple/.m2/repository/apache-maven-3.8.2/bin:/Users/apple/.yarn/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.9.1
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: getaddrinfo ENOTFOUND registry.npmjs.org
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:111:26)
+
+npm manifest: 
+  {
+    "name": "hisfront",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+      "serve": "vue-cli-service serve",
+      "build": "vue-cli-service build"
+    },
+    "dependencies": {
+      "axios": "^0.25.0",
+      "core-js": "^3.6.5",
+      "echarts": "^5.4.0",
+      "element-tiptap": "^1.27.1",
+      "element-ui": "^2.15.6",
+      "js-cookie": "^3.0.1",
+      "json-bigint": "^1.0.0",
+      "qs": "^6.10.3",
+      "sass-loader": "^7.0.7",
+      "scss": "^0.2.4",
+      "vant": "^2.12.53",
+      "vue": "^2.6.11",
+      "vue-baidu-map": "^0.21.22",
+      "vue-router": "^3.2.0",
+      "wangeditor": "^4.7.15"
+    },
+    "devDependencies": {
+      "@vue/cli-plugin-babel": "~4.5.0",
+      "@vue/cli-plugin-router": "~4.5.0",
+      "@vue/cli-service": "~4.5.0",
+      "less": "^3.9.0",
+      "less-loader": "^4.1.0",
+      "node-sass": "^8.0.0",
+      "sass": "^1.58.0",
+      "vue-template-compiler": "^2.6.11",
+      "webpack": "^4.0.0"
+    },
+    "browserslist": [
+      "> 1%",
+      "last 2 versions",
+      "not dead"
+    ]
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
